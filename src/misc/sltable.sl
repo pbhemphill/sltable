@@ -835,6 +835,7 @@ define sltable()
 %\seealso{TeX_value_pm_error}
 %!%-
 {
+  sltableNTabs = 0; % reset tabs to zero when sltable is called
   variable theHeader,theTable,theFooter;
   variable args = __pop_list(_NARGS);
   variable quals = __qualifiers;
