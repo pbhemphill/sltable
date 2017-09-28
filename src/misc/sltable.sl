@@ -373,7 +373,7 @@ private define sltableRoundToDigit(val,sf) {
 %   sltableRoundToDigit
 %%%%%%%%%%%%%%%%%%%%%%%%
 private define sltableRound() {
-  variable value, mini, maxi, limit;
+  variable value, mini, maxi, limit = 0, nodata = 0, frz = 0;
   if(_NARGS == 1) {
     (value) = ();
   } else if(_NARGS == 3) {
@@ -383,8 +383,8 @@ private define sltableRound() {
   }
 
   variable frozenDelim = qualifier("frozendelim",["(",")"]);
+  variable nodataSymb = qualifier("nodata",sltableType=="deluxetable"?"\\nodata":"\\ldots");
 
-  variable frz,canBeZero;
   if(typeof(value) == Struct_Type && typeof(value.value) == String_Type) {
     value = value.value;
   } else if(typeof(value) == Struct_Type && typeof(value.value) != String_Type) {
@@ -392,18 +392,23 @@ private define sltableRound() {
     maxi = struct_field_exists(value,"max") ? value.max : value.value;
     frz = struct_field_exists(value,"freeze") ? value.freeze : 0;
     limit = struct_field_exists(value,"limit") ? value.limit : 1;
+    nodata = struct_field_exists(value,"nodata") ? value.nodata : 0;
     value = value.value;
   } else if(typeof(mini) != Undefined_Type) {
     frz = 0;
     limit = 0;
+    nodata = 0;
   } else {
     mini = value;
     maxi = value;
     frz = 0;
     limit = 0;
+    nodata = 0;
   }
 
-  if (typeof(value) == String_Type) { % output strings as-is
+  if(nodata) { % first, if "nodata" was set, output the nodataSymb
+    return nodataSymb;
+  } else if (typeof(value) == String_Type) { % output strings as-is
       return value;
   } else if (mini == maxi and frz == 0) {  % parameter has no errors
     return sprintf("$%s$",sltableRoundToDigit(value,3));
@@ -477,10 +482,11 @@ define sltableBuildBody() {
   variable parList = __pop_list(_NARGS);
   variable horiz = qualifier("horiz",0);
   variable frozenDelim = qualifier("frozendelim",["(",")"]);
+  variable nodataSymb = qualifier("nodata",sltableType=="deluxetable"?"\\nodata":"\\ldots");
   variable rowNames = qualifier("rownames",String_Type[0]);
   if(length(rowNames) && typeof(rowNames) != List_Type) rowNames = {rowNames};
   variable i,j;
-  variable value, err, mini, maxi, frz, tied, fun, nodata;
+  variable value;
   variable numRows, numCols;
   variable theTable;
 
@@ -530,7 +536,7 @@ define sltableBuildBody() {
         } else {
           value = parList[i][jNdx];
         }
-        theTable[j,iNdx] = sltableRound(value;frozendelim=frozenDelim);
+        theTable[j,iNdx] = sltableRound(value;frozendelim=frozenDelim,nodata=nodataSymb);
       }
     }
   }
@@ -723,13 +729,16 @@ define sltable()
 %\description
 %   sltable() is intended to streamline the production of tables of,
 %   e.g., spectral parameters with error bars, although it should be flexible
-%   enough to produce most simply-structured tables. By default this builds
-%   tables using the "deluxetable" package; this can be disabled to produce
-%   standard "tabular" tables by setting the "deluxe" qualifier to zero.
+%   enough to produce most simply-structured tables. There is a set of examples
+%   on the Remeis wiki:
+%   http://www.sternwarte.uni-erlangen.de/wiki/doku.php?id=isis:sltable
 %
-%   The deluxetable environment has been tested using the latest aastex61.cls
-%   stylefile. Tabular tables will require the "booktabs" package, as they
-%   provide the \\toprule, \\midrule, and \\bottomrule commands used here.
+%   By default this builds tables using the "deluxetable" package; this can be
+%   disabled to produce standard "tabular" tables by setting the "deluxe"
+%   qualifier to zero. The deluxetable environment has been tested using the
+%   latest aastex61.cls stylefile. Tabular tables will require the "booktabs"
+%   package, as they provide the \\toprule, \\midrule, and \\bottomrule
+%   commands used here.
 %
 %   Each argument given to sltable() provides the values of one
 %   column of the table (or one row, if the "horiz" qualifier is nonzero).
@@ -748,6 +757,7 @@ define sltable()
 %     max: the maximum values of this parameter
 %     freeze: if 1, the parameter is frozen, if 0, it is thawed
 %     limit: if 1, this can be an upper/lower limit (i.e., zero means it's not there)
+%     nodata: if 1, there is no data here and "..." should be printed
 %   These should all be arrays of the same length as the "value" field, and
 %   allow for the printing of error bars and indicating upper/lower limits and
 %   frozen parameters.
@@ -759,6 +769,11 @@ define sltable()
 %   symbols. If frozen, it is rounded to three decimal places and surrounded by
 %   parentheses (these delimiters can be customized by changing the
 %   "frozendelim" qualifier).
+%
+%   If the "nodata" field is nonzero, then a "no data" indicator will be
+%   printed. By default, for a deluxetable, this is "\\nodata" and for a
+%   tabular table it is "\\ldots". This is useful if you are putting multiple
+%   models which do not share the same parameters into the same table.
 %
 %   This is a lot of words, so here is an
 %   EXAMPLE
@@ -811,6 +826,9 @@ define sltable()
 %        handled by the "label" qualifier below.}
 %\qualifier{label}{: String_Type. LaTeX label for the table. Default is
 %        "placeholder," so make sure to set this.}
+%\qualifier{nodata}{: String_Type, set to what should be printed if there is no
+%         data for a particular field (e.g., if you are putting multiple models
+%         into the same table and they do not share the same parameters).
 %\qualifier{frozendelim}{: String_Type[], two-element string array containing
 %        opening and closing delimiters for a frozen value. By default this is
 %        ["(",")"], i.e., the frozen value is surrounded by parentheses.}
