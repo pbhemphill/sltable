@@ -387,7 +387,7 @@ private define sltableRound() {
   variable frz,canBeZero;
   if(typeof(value) == Struct_Type && typeof(value.value) == String_Type) {
     value = value.value;
-  } else if(typeof(value.value) != String_Type) {
+  } else if(typeof(value) == Struct_Type && typeof(value.value) != String_Type) {
     mini = struct_field_exists(value,"min") ? value.min : value.value;
     maxi = struct_field_exists(value,"max") ? value.max : value.value;
     frz = struct_field_exists(value,"freeze") ? value.freeze : 0;
@@ -428,13 +428,13 @@ private define sltableRound() {
 %   String_Type table[] = sltableBuildBody(Array_Type par1[, Array_Type par2,...])
 %
 % DESCRIPTION
-%   Builds the "body" of the table (in the form of a 2D array of strings,
+%   Builds the "body" of a table (in the form of a 2D array of strings,
 %   containing the fields of the table).
 
-%   Arguments should be either 1D arrays or structs. An array of strings will
-%   be used as-is. Arrays of numbers will be rounded to 3 significant figures.
-%   Structs allow the handling of error bars and offer considerably more
-%   flexibility, as defined below:
+%   Arguments should be either 1D arrays or structs, the same as one would give
+%   to sltable(). An array of strings will be used as-is. Arrays of numbers
+%   will be rounded to 3 significant figures.  Structs allow the handling of
+%   error bars and offer considerably more flexibility, as defined below:
 %
 %   Struct arguments should, at minimum, have a "value" field, which must be
 %   an array containing the value of the parameter for each row (or column, if
@@ -468,7 +468,7 @@ private define sltableRound() {
 % SEE ALSO
 %
 %%%%%%%%%%%%%%%%%%%%%%%%
-private define sltableBuildBody() {
+define sltableBuildBody() {
   if(_NARGS < 1) {
     usage("String_Type table[] = sltableBuildBody(Struct_Type par1[, Struct_Type par2,...])");
     throw StackUnderflowError;
@@ -842,8 +842,11 @@ define sltable()
   variable horiz = qualifier("horiz",0);
   if(_isnull(quals)) quals = empty_struct;
 
-  if(qualifier("deluxe",1))
+  if(qualifier("deluxe",1)) {
     sltableSetType("deluxetable");
+  } else {
+    sltableSetType("tabular");
+  }
 
   theTable = sltableBuildBody(__push_list(args);;quals);
   if(horiz) theTable = transpose(theTable);
