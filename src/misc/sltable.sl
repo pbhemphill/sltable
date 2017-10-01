@@ -386,6 +386,7 @@ private define sltableRound() {
   variable nodataSymb = qualifier("nodata",sltableType=="deluxetable"?"\\nodata":"\\ldots");
 
   if(typeof(value) == Struct_Type && typeof(value.value) == String_Type) {
+    nodata = struct_field_exists(value,"nodata") ? value.nodata : 0;
     value = value.value;
   } else if(typeof(value) == Struct_Type && typeof(value.value) != String_Type) {
     mini = struct_field_exists(value,"min") ? value.min : value.value;
