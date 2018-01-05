@@ -822,9 +822,10 @@ define sltable()
 %\qualifier{colnames}{: String_Type[] or List_Type[]. Names for the columns of
 %        the table (i.e., the column headers). Similar to rownames above,
 %        multi-line headers can be produced by passing a List_Type to this
-%        qualifier.} \qualifier{caption}{: String_Type. LaTeX caption for the
-%        table. Default is blank. Don't include a label statement here - that's
-%        handled by the "label" qualifier below.}
+%        qualifier.} 
+%\qualifier{caption}{: String_Type. LaTeX caption for the table. Default is
+%        blank. Don't include a label statement here - that's handled by the 
+%        "label" qualifier below.}
 %\qualifier{label}{: String_Type. LaTeX label for the table. Default is
 %        "placeholder," so make sure to set this.}
 %\qualifier{nodata}{: String_Type, set to what should be printed if there is no
