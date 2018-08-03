@@ -29,7 +29,7 @@ private define sltableTabs() {
 % DESCRIPTION
 %   This function sets the internal "sltableType" variable, which is checked by
 %   the other functions in this package to determine what type of LaTeX code
-%   they output. E.g., table_note_mark("*") will output "\tablenotemark{*}"
+%   they output. E.g., sltableNoteMark("*") will output "\tablenotemark{*}"
 %   command if sltableType == "deluxetable", but will output "$^{\text{*}}$" if
 %   sltableType == "tabular".
 %
@@ -87,7 +87,7 @@ private define sltableGetType() {
 %   Produces a table note mark
 %
 % USAGE
-%   String_Type markText = table_note_mark(String_Type mark)
+%   String_Type markText = sltableNoteMark(String_Type mark)
 %
 % DESCRIPTION
 %   Produces table note mark (e.g., a superscripted character or symbol) code
@@ -102,7 +102,7 @@ private define sltableGetType() {
 %   String_Type markText: formatted table note mark
 %
 % SEE ALSO
-%   table_note_text
+%   sltableNoteText
 %%%%%%%%%%%%%%%%%%%%%%%%
 private define sltableNoteMark(mark) {
   if(sltableType == "deluxetable") 
@@ -118,7 +118,7 @@ private define sltableNoteMark(mark) {
 %   Produces a table footnote
 %
 % USAGE
-%   String_Type footnoteText = table_note_mark(String_Type mark, String_Type
+%   String_Type footnoteText = sltableNoteText(String_Type mark, String_Type
 %   text)
 %
 % DESCRIPTION
@@ -135,7 +135,7 @@ private define sltableNoteMark(mark) {
 %   String_Type foonoteText: formatted table note text
 %
 % SEE ALSO
-%   table_note_mark
+%   sltableNoteMark
 %%%%%%%%%%%%%%%%%%%%%%%%
 private define sltableNoteText(mark,text) {
   if(sltableType == "deluxetable") 
@@ -187,7 +187,7 @@ private define sltableCaption(text,label) {
 %   Create a formatted table column header.
 %
 % USAGE
-%   String_Type colhead = table_col_head(String_Type text)
+%   String_Type colhead = sltableColHead(String_Type text)
 %
 % DESCRIPTION
 %   Create a properly-formatted column header containing the supplied text for
@@ -203,7 +203,7 @@ private define sltableCaption(text,label) {
 %   String_Type colhead: The formatted column header.
 %
 % SEE ALSO
-%   table_head
+%   sltableColHeads
 %%%%%%%%%%%%%%%%%%%%%%%%
 private define sltableColHead(text) {
   if(sltableType == "deluxetable")
@@ -219,7 +219,7 @@ private define sltableColHead(text) {
 %   Create a formatted table header statement
 %
 % USAGE
-%   String_Type sltableColHeads = table_head(String_Type colHeads)
+%   String_Type sltableColHeads = sltableColHeads(String_Type colHeads)
 %
 % DESCRIPTION
 %   Given the full text of the column headers (as a single string!), returns
@@ -236,7 +236,7 @@ private define sltableColHead(text) {
 %   String_Type sltableColHeads: Formatted table header line
 %
 % SEE ALSO
-%   table_col_head
+%   sltableColHead
 %%%%%%%%%%%%%%%%%%%%%%%%
 private define sltableColHeads(text) {
   if(sltableType == "deluxetable")
@@ -425,18 +425,16 @@ private define sltableRound() {
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-% sltableBuildBody
-%
-% SYNOPSIS
-%   Build the 2D array of table cells
-%
-% USAGE
-%   String_Type table[] = sltableBuildBody(Array_Type par1[, Array_Type par2,...])
-%
-% DESCRIPTION
+define sltableBuildBody()
+%%%%%%%%%%%%%%%%%%%%%%%%
+%!%+
+%\function{sltableBuildBody}
+%\synopsis{Build a 2D array of table cells}
+%\usage{String_Type table[] = sltableBuildBody(Array_Type par1[, Array_Type par2,...])}
+%\description
 %   Builds the "body" of a table (in the form of a 2D array of strings,
 %   containing the fields of the table).
-
+%
 %   Arguments should be either 1D arrays or structs, the same as one would give
 %   to sltable(). An array of strings will be used as-is. Arrays of numbers
 %   will be rounded to 3 significant figures.  Structs allow the handling of
@@ -467,14 +465,23 @@ private define sltableRound() {
 %   array or the first struct's value field. All later arrays and struct fields
 %   should have the same number of elements.
 %
-% INPUTS
+%\qualifiers{
+%\qualifier{horiz}{: Integer_Type. If zero, each argument defines one column of
+%           the table. If nonzero, each argument defines one row. Default 0.}
+%\qualifier{frozendelim}{: String_Type[2]. Defines strings to use before and
+%           after a frozen parameter value. Default ["(",")"].}
+%\qualifier{nodata}{: String_Type. Defines string to use when no data is
+%           present in a cell. Default is "\\nodata" for deluxetables and
+%           "\\ldots" for tabular tables.}
+%\qualifier{rownames}{: String_Type[] or List_Type. Names for rows of table.
+%         If given as a List_Type of String_Type arrays, each element of the
+%         list will be included in its own column (this is useful for, e.g.,
+%         putting the parameter name and the units in separate columns).}
+%}
 %
-% OUTPUTS
-%
-% SEE ALSO
-%
-%%%%%%%%%%%%%%%%%%%%%%%%
-define sltableBuildBody() {
+%\seealso{sltable}
+%!%-
+{
   if(_NARGS < 1) {
     usage("String_Type table[] = sltableBuildBody(Struct_Type par1[, Struct_Type par2,...])");
     throw StackUnderflowError;
@@ -757,7 +764,7 @@ define sltable()
 %     min: the minimum values of this parameter
 %     max: the maximum values of this parameter
 %     freeze: if 1, the parameter is frozen, if 0, it is thawed
-%     limit: if 1, this can be an upper/lower limit (i.e., zero means it's not there)
+%     limit: if 1, this can be an upper/lower limit
 %     nodata: if 1, there is no data here and "..." should be printed
 %   These should all be arrays of the same length as the "value" field, and
 %   allow for the printing of error bars and indicating upper/lower limits and
