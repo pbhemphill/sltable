@@ -837,7 +837,7 @@ define sltable()
 %        "placeholder," so make sure to set this.}
 %\qualifier{nodata}{: String_Type, set to what should be printed if there is no
 %         data for a particular field (e.g., if you are putting multiple models
-%         into the same table and they do not share the same parameters).
+%         into the same table and they do not share the same parameters).}
 %\qualifier{frozendelim}{: String_Type[], two-element string array containing
 %        opening and closing delimiters for a frozen value. By default this is
 %        ["(",")"], i.e., the frozen value is surrounded by parentheses.}
