@@ -46,3 +46,10 @@ I wrote up a short
 tables_with_sltable) on how to use SLTable! There is also quite a bit of
 documentation in the code; if you use SLTable via the ISISscripts, this
 should be accessible to you using ISIS' `help` command.
+
+# Future plans
+Some of the approach taken is a bit sloppy - I rely on a global private
+variable to keep track of which type of table we're creating, for
+example. S-Lang has much stronger object-oriented capabilities than
+I knew when I was initially writing this - I'd like to upgrade it
+eventually to a more object-oriented structure.
