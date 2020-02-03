@@ -42,10 +42,10 @@ install and `require` the full ISISscripts.
 
 # Usage
 I wrote up a short
-[tutorial](https://www.sternwarte.uni-erlangen.de/wiki/index.php/Making_
-tables_with_sltable) on how to use SLTable! There is also quite a bit of
-documentation in the code; if you use SLTable via the ISISscripts, this
-should be accessible to you using ISIS' `help` command.
+[tutorial](https://www.sternwarte.uni-erlangen.de/wiki/index.php/Making_tables_with_sltable)
+on how to use SLTable! There is also quite a bit of documentation in the
+code; if you use SLTable via the ISISscripts, this should be accessible 
+to you using ISIS' `help` command, e.g., `help sltable`.
 
 # Future plans
 Some of the approach taken is a bit sloppy - I rely on a global private
