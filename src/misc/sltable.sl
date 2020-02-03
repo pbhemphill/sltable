@@ -1,10 +1,21 @@
-% This sets which type of table we're creating.
+% The ISISscripts are a prerequisite
+% (technically, sltable is _part_ of the ISISscripts)
+#ifnexists TeX_value_pm_error
+require("isisscripts");
+#endif
+
+% This determines which type of table we're creating.
+% "tabular" -> make a standard LaTeX table
+% "deluxetable" -> table using the deluxetable LaTeX package
 private variable sltableType = "tabular";
-% end-of-line character
+
+% end-of-line command
 private define sltableEOL() {
   return "\n";
 }
-% these keep track of indentation
+
+% Keeping track of indentation
+% This really just makes the TeX code a bit prettier, but it's nice to have
 private variable sltableNTabs = 0;
 private define sltableTabs() {
   variable i;
@@ -71,7 +82,7 @@ private define sltableSetType() {
 %   No inputs
 %
 % OUTPUTS
-%   No outputs
+%   String_Type sltableType: the currently-selected table type ("tabular" or "deluxetable")
 %
 % SEE ALSO
 %   table_set_type
